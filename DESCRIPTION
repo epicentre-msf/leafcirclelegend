@@ -16,3 +16,5 @@ Imports:
     htmlwidgets,
     leaflet,
     scales
+URL: https://github.com/epicentre-msf/leafcirclelegend
+BugReports: https://github.com/epicentre-msf/leafcirclelegend/issues
