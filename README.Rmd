@@ -131,18 +131,10 @@ if (!file.exists(path_img)) {
 knitr::include_graphics(path_img)
 ```
 
-```{r eval=FALSE, include=FALSE}
-library(mapsf)
+## Related Projects
 
-quakes_sf <- sf::st_as_sf(df_leaf, coords = c("long", "lat"))
+The [`leaflegend`](https://github.com/tomroh/leaflegend) package provides many additional legend options for leaflet maps, but does not have a scaled circle option in the style of this package. Some code, most notably the javascript code to add the legend to a group that can be controlled by a layer control, was taken from `leaflegend`.
 
-mf_prop(
-  quakes_sf,
-  var = "mag",
-  add = FALSE
-)
-
-```
 
 ```{r eval=FALSE, include=FALSE}
 

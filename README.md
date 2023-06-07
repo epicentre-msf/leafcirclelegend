@@ -81,3 +81,11 @@ leaflet(df_leaf) %>%
 ```
 
 <img src="man/figures/example.png" width="100%" />
+
+## Related Projects
+
+The [`leaflegend`](https://github.com/tomroh/leaflegend) package
+provides many additional legend options for leaflet maps, but does not
+have a scaled circle option in the style of this package. Some code,
+most notably the javascript code to add the legend to a group that can
+be controlled by a layer control, was taken from `leaflegend`.
