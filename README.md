@@ -80,4 +80,4 @@ leaflet(df_leaf) %>%
   )
 ```
 
-<img src="../../../../../private/var/folders/dd/_r3xlwhj6qj_xkdskb9tzb300000gn/T/RtmpWft41g/fileae81ada3c1d.png" width="100%" />
+<img src="man/figures/example.png" width="100%" />

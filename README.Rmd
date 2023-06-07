@@ -122,9 +122,9 @@ m <- leaflet(df_leaf) %>%
     position = "topright",
     group = "Circles"
   )
-tmp_img <- tempfile(fileext = ".png")
-mapview::mapshot2(m, file = tmp_img, remove_controls = "scaleBar", vwidth = 800, vheight = 400)
-knitr::include_graphics(tmp_img)
+path_img <- here::here("man", "figures", "example.png")
+mapview::mapshot2(m, file = path_img, remove_controls = "scaleBar", vwidth = 800, vheight = 400)
+knitr::include_graphics(path_img)
 ```
 
 ```{r eval=FALSE, include=FALSE}
