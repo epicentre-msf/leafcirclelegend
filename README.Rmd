@@ -1,0 +1,177 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# leafcirclelegend
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+Add scaled circle legends to leaflet maps.
+
+## Installation
+
+You can install the development version of `leafcirclelegend` using the `remotes` package`:
+
+``` r
+remotes::install_github("epicentre-msf/leafcirclelegend")
+```
+
+## Example
+
+#### Setup
+
+```{r setup}
+library(tidyverse)
+library(leaflet)
+library(leafcirclelegend)
+
+data("quakes")
+
+# take a sample of the data for example purposes
+df_leaf <- slice_sample(quakes, n = 20) %>% arrange(desc(depth))
+
+# make a scaling function to convert real numbers to radii appropriate for leaflet
+calc_radius <- function(n, scale_factor = 30) {
+  sqrt(n) / sqrt(max(n)) * scale_factor
+}
+
+# define stroke and fill params
+stroke_color <- "#FFFFFF"
+stroke_weight <- 1
+fill_color <- "#e06e22"
+fill_opacity <- 0.7
+```
+
+#### Map
+
+```{r eval=FALSE}
+leaflet(df_leaf) %>% 
+  addTiles() %>% 
+  addLayersControl(
+    overlayGroups = "Circles", 
+    position = "topleft",
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>% 
+  addCircleMarkers(
+    lng = ~long, 
+    lat = ~lat, 
+    radius = ~calc_radius(depth),
+    label = ~stations,
+    fillColor = fill_color, 
+    fillOpacity = fill_opacity, 
+    weight = stroke_weight, 
+    color = stroke_color,
+    group = "Circles"
+  ) %>% 
+  addCircleLegend(
+    title = "Quake Depth",
+    values = ~depth,
+    scaling_fn = calc_radius,
+    fillColor = fill_color, 
+    fillOpacity = fill_opacity, 
+    weight = stroke_weight, 
+    color = stroke_color,
+    position = "topright",
+    group = "Circles"
+  )
+```
+
+```{r echo=FALSE}
+pkgload::load_all()
+m <- leaflet(df_leaf) %>% 
+  addTiles() %>% 
+  addLayersControl(
+    overlayGroups = "Circles", 
+    position = "topleft",
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>% 
+  addCircleMarkers(
+    lng = ~long, 
+    lat = ~lat, 
+    radius = ~calc_radius(depth),
+    label = ~stations,
+    fillColor = fill_color, 
+    fillOpacity = fill_opacity, 
+    weight = stroke_weight, 
+    color = stroke_color,
+    group = "Circles"
+  ) %>% 
+  addCircleLegend(
+    title = "Quake Depth",
+    values = ~depth,
+    scaling_fn = calc_radius,
+    fillColor = fill_color,
+    fillOpacity = fill_opacity,
+    weight = stroke_weight,
+    color = stroke_color,
+    position = "topright",
+    group = "Circles"
+  )
+tmp_img <- tempfile(fileext = ".png")
+mapview::mapshot2(m, file = tmp_img, remove_controls = "scaleBar", vwidth = 800, vheight = 400)
+knitr::include_graphics(tmp_img)
+```
+
+```{r eval=FALSE, include=FALSE}
+library(mapsf)
+
+quakes_sf <- sf::st_as_sf(df_leaf, coords = c("long", "lat"))
+
+mf_prop(
+  quakes_sf,
+  var = "mag",
+  add = FALSE
+)
+
+```
+
+```{r eval=FALSE, include=FALSE}
+
+sizeNumeric <- function(values, baseSize = 20) {
+  stopifnot(baseSize > 0)
+  values / mean(values, na.rm = TRUE) * baseSize
+}
+
+scale_circle <- function(x, scale_factor = 1e3) {
+  # Find the maximum value in the vector
+  max_val <- max(x)
+  # Calculate the scaling factor
+  scaling_factor <- scale_factor / sqrt(max_val / pi)
+  # Scale each value in the vector
+  scaled_values <- sqrt(x / pi) * scaling_factor
+  # convert to radii for leaflet
+  radii <- sqrt(scaled_values / pi)
+  # Return the scaled values
+  return(radii)
+}
+
+get_size <- function(var, inches = 0.3, val_max) {
+  # Default max value
+  if (missing(val_max)) {
+    val_max <- max(var, na.rm = TRUE)
+  }
+  pixels <- inches * 96
+  smax <- pixels * pixels * pi
+  size <- sqrt((var * smax / val_max) / pi)
+  return(size)
+}
+
+scale_circle(quakes$mag)
+```
+
+
