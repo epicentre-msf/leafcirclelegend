@@ -60,7 +60,7 @@ leaflet(df_leaf) %>%
     lng = ~long, 
     lat = ~lat, 
     radius = ~calc_radius(depth),
-    label = ~stations,
+    label = ~depth,
     fillColor = fill_color, 
     fillOpacity = fill_opacity, 
     weight = stroke_weight, 

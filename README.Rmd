@@ -71,7 +71,7 @@ leaflet(df_leaf) %>%
     lng = ~long, 
     lat = ~lat, 
     radius = ~calc_radius(depth),
-    label = ~stations,
+    label = ~depth,
     fillColor = fill_color, 
     fillOpacity = fill_opacity, 
     weight = stroke_weight, 
@@ -92,38 +92,42 @@ leaflet(df_leaf) %>%
 ```
 
 ```{r echo=FALSE}
-pkgload::load_all()
-m <- leaflet(df_leaf) %>% 
-  addTiles() %>% 
-  addLayersControl(
-    overlayGroups = "Circles", 
-    position = "topleft",
-    options = layersControlOptions(collapsed = FALSE)
-  ) %>% 
-  addCircleMarkers(
-    lng = ~long, 
-    lat = ~lat, 
-    radius = ~calc_radius(depth),
-    label = ~stations,
-    fillColor = fill_color, 
-    fillOpacity = fill_opacity, 
-    weight = stroke_weight, 
-    color = stroke_color,
-    group = "Circles"
-  ) %>% 
-  addCircleLegend(
-    title = "Quake Depth",
-    values = ~depth,
-    scaling_fn = calc_radius,
-    fillColor = fill_color,
-    fillOpacity = fill_opacity,
-    weight = stroke_weight,
-    color = stroke_color,
-    position = "topright",
-    group = "Circles"
-  )
 path_img <- here::here("man", "figures", "example.png")
-mapview::mapshot2(m, file = path_img, remove_controls = "scaleBar", vwidth = 800, vheight = 400)
+
+if (!file.exists(path_img)) {
+  pkgload::load_all()
+  m <- leaflet(df_leaf) %>% 
+    addTiles() %>% 
+    addLayersControl(
+      overlayGroups = "Circles", 
+      position = "topleft",
+      options = layersControlOptions(collapsed = FALSE)
+    ) %>% 
+    addCircleMarkers(
+      lng = ~long, 
+      lat = ~lat, 
+      radius = ~calc_radius(depth),
+      label = ~depth,
+      fillColor = fill_color, 
+      fillOpacity = fill_opacity, 
+      weight = stroke_weight, 
+      color = stroke_color,
+      group = "Circles"
+    ) %>% 
+    addCircleLegend(
+      title = "Quake Depth",
+      values = ~depth,
+      scaling_fn = calc_radius,
+      fillColor = fill_color,
+      fillOpacity = fill_opacity,
+      weight = stroke_weight,
+      color = stroke_color,
+      position = "topright",
+      group = "Circles"
+    )
+  mapview::mapshot2(m, file = path_img, remove_controls = "scaleBar", vwidth = 800, vheight = 400)
+}
+
 knitr::include_graphics(path_img)
 ```
 
